@@ -1,0 +1,281 @@
+<script src="fe_assets/js/jquery-2.0.0.min.js"></script> <!-- Jquery Library Call -->
+<script src="fe_assets/plugins/prettyphoto/js/prettyphoto.js"></script> <!-- PrettyPhoto Plugin -->
+<script src="fe_assets/plugins/owl-carousel/js/owl.carousel.min.js"></script> <!-- Owl Carousel -->
+<script src="fe_assets/plugins/flexslider/js/jquery.flexslider.js"></script> <!-- FlexSlider -->
+<script src="fe_assets/plugins/handlebars.min.js"></script> <!-- FlexSlider -->
+<script src="fe_assets/js/helper-plugins.js"></script> <!-- Plugins -->
+<script src="fe_assets/js/bootstrap.js"></script> <!-- UI -->
+<script src="fe_assets/plugins/jquery.form.js"></script> <!-- UI -->
+<script src="fe_assets/plugins/jquery.validate.min.js"></script>
+<script src="fe_assets/js/waypoints.js"></script> <!-- Waypoints -->
+<script src="/fe_assets/plugins/select2/select2.min.js"></script>
+<script src="/fe_assets/plugins/pagination/pagination.min.js"></script>
+
+<script src="/admin_assets/vendor/easy_autocomplete/jquery.easy-autocomplete.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="fe_assets/js/init.js"></script> <!-- All Scripts -->
+<!--[if lte IE 9]><script src="fe_assets/js/script_ie.js"></script><![endif]-->
+
+
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        cache: false
+    });
+
+
+    function string_to_slug(str) {
+        str = str.replace(/^\s+|\s+$/g, ''); // trim
+        str = str.toLowerCase();
+
+        // remove accents, swap ñ for n, etc
+        var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+        var to = "aaaaeeeeiiiioooouuuunc------";
+
+        for (var i = 0, l = from.length; i < l; i++) {
+            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+
+        str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+            .replace(/-+/g, '-'); // collapse dashes
+
+        return str;
+    };
+
+    function universityPageSlug(item) {
+        return "/" + item.slug + "-universities";
+    }
+
+    function getQS(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+        switch (operator) {
+            case '==':
+                return (v1 == v2) ? options.fn(this) : options.inverse(this);
+            case '===':
+                return (v1 === v2) ? options.fn(this) : options.inverse(this);
+            case '!=':
+                return (v1 != v2) ? options.fn(this) : options.inverse(this);
+            case '!==':
+                return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+            case '<':
+                return (v1 < v2) ? options.fn(this) : options.inverse(this);
+            case '<=':
+                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+            case '>':
+                return (v1 > v2) ? options.fn(this) : options.inverse(this);
+            case '>=':
+                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+            case '&&':
+                return (v1 && v2) ? options.fn(this) : options.inverse(this);
+            case '||':
+                return (v1 || v2) ? options.fn(this) : options.inverse(this);
+            default:
+                return options.inverse(this);
+        }
+    });
+</script>
+
+<script>
+
+    (function ($) {
+
+        $.HeaderWorldList = function (options) {
+
+            var countriesList = [];
+            var usaStatesList = [];
+
+            var settings = $.extend({
+            }, options);
+
+            var getCountries = function () {
+                $.get('/api/app_countries/filter.php', { type: 1 }, function (response) {
+                    countriesList = JSON.parse(response);
+                    window.Countries = countriesList;
+                    fillCountriesDropdown();
+                });
+            };
+
+            var fillCountriesDropdown = function () {
+
+                for (let index = 0; index < countriesList.length; index++) {
+
+                    const item = countriesList[index];
+
+                    var a = $("<a />", {
+                        text: item.title,
+                        href: universityPageSlug(item)
+                    });
+
+                    $("#countries_1").append($("<li />", { class: 'cnt' }).html(a));
+                }
+
+                if ($("#fmSearch select[name='worldwide']").length <= 0) return;
+
+                $(countriesList).each(function (ix, item) {
+                    var option = $("<option />", {
+                        text: item.title,
+                        value: item.slug
+                    });
+
+                    $("#fmSearch select[name='worldwide']").append(option);
+                });
+
+                $("#fmSearch select[name='worldwide']").select2({
+                    theme: 'bootstrap',
+                    width: '100%',
+                });
+
+                $("#fmSearch select[name='worldwide']").data('select2').$container.addClass('form-control');
+            };
+
+            var getUSAStates = function () {
+                $.get('/api/app_properties/group_by_state.php', { country: 'United States' }, function (response) {
+                    usaStatesList = JSON.parse(response);
+                    window.USAStates = usaStatesList;
+                    fillUSAStateDropdown();
+                });
+            };
+
+            var fillUSAStateDropdown = function () {
+
+                for (let index = 0; index < usaStatesList.length; index++) {
+
+                    const item = usaStatesList[index];
+
+                    var slug = "/united-states-universities" + "?state=" + item.state;
+
+                    var a = $("<a />", {
+                        text: item.state,
+                        href: slug
+                    });
+
+                    $("#usaStates_1").append($("<li />", { class: 'cnt' }).html(a));
+                }
+
+                if ($("#fmSearch select[name='usa_state']").length <= 0) return;
+
+                $(usaStatesList).each(function (ix, item) {
+                    var option = $("<option />", {
+                        text: item.state,
+                        value: item.state
+                    });
+
+                    $("#fmSearch select[name='usa_state']").append(option);
+
+                });
+
+                $("#fmSearch select[name='usa_state']").select2({
+                    theme: 'bootstrap',
+                    width: '100%',
+                });
+
+                $("#fmSearch select[name='usa_state']").data('select2').$container.addClass('form-control');
+
+            };
+
+            var registerEvents = function () {
+
+                var options = {
+                    url: function (phrase) {
+                        return "/api/app_properties/filter_suggest.php?title=" + phrase;
+                    },
+                    list: {
+                        onClickEvent: function () {
+                            var item = $("#txtTopSearch").getSelectedItemData();
+                            var slug = '/' + string_to_slug(item.title) + "-" + item.id;
+                            window.location.href = slug;
+                        },
+
+                    },
+                    getValue: "title",
+                    minCharNumber: 3
+                };
+
+                $("#txtTopSearch").easyAutocomplete(options);
+
+                $("div").on("keyup", "#txtQCountries_1", function (e) {
+                    e.stopPropagation();
+
+                    var val = $.trim($(this).val());
+
+                    var data = countriesList; //.slice(0, 5);
+
+                    if (val || val.length > 3) {
+                        data = countriesList.filter(a => a.title.toLowerCase().indexOf(val) >= 0);
+                    }
+
+                    $("#countries_1 .cnt").remove();
+
+                    $(data).each(function (ix, item) {
+
+                        var slug = universityPageSlug(item);
+
+                        var a = $("<a />", {
+                            text: item.title,
+                            href: slug
+                        });
+
+                        $("#countries_1").append($("<li />", { class: 'cnt' }).html(a));
+                    });
+
+                });
+
+                $("div").on("keyup", "#txtQUSAStates_1", function (e) {
+                    e.stopPropagation();
+
+                    var val = $.trim($(this).val());
+
+                    var data = usaStatesList;//.slice(0, 5);
+
+                    if (val || val.length > 3) {
+                        data = usaStatesList.filter(a => a.state.toLowerCase().indexOf(val) >= 0);
+                    }
+
+                    $("#usaStates_1 .cnt").remove();
+
+                    $(data).each(function (ix, item) {
+
+                        var slug = "/" + string_to_slug(item.country) + "-universities?state=" + item.state;
+
+                        var a = $("<a />", {
+                            text: item.state,
+                            href: slug
+                        });
+
+                        $("#usaStates_1").append($("<li />", { class: 'cnt' }).html(a));
+                    });
+
+                });
+            };
+
+            var init = function () {
+                getCountries();
+                getUSAStates();
+                registerEvents();
+            };
+
+            init();
+
+            return this;
+        }
+
+        new $.HeaderWorldList();
+
+    }(jQuery));
+
+    $(document).ready(function () {
+    });
+
+
+</script>

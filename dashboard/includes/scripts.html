@@ -1,0 +1,161 @@
+<script src="/admin_assets/vendor/jquery/jquery.min.js"></script>
+<script src="/admin_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script src="/admin_assets/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/admin_assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="/admin_assets/vendor/datatables/dataTables.responsive.min.js"></script>
+<script src="/admin_assets/vendor/datatables/dataTables.buttons.min.js"></script>
+<script src="/admin_assets/vendor/datatables/buttons.bootstrap4.min.js"></script>
+<script src="/admin_assets/vendor/datatables/jszip.min.js"></script>
+<script src="/admin_assets/vendor/datatables/pdfmake.min.js"></script>
+<script src="/admin_assets/vendor/datatables/vfs_fonts.js"></script>
+<script src="/admin_assets/vendor/datatables/buttons.print.min.js"></script>
+<script src="/admin_assets/vendor/datatables/buttons.html5.min.js"></script>
+
+<script src="/admin_assets/vendor/jquery/handlebars.min.js"></script>
+<script src="/admin_assets/vendor/toastr/toastr.min.js"></script>
+<script src="/admin_assets/vendor/jquery/jquery.validate.min.js"></script>
+<script src="/admin_assets/vendor/jquery/jquery.form.js"></script>
+<script src="/admin_assets/vendor/bootbox/bootbox.all.min.js"></script>
+<script src="/admin_assets/vendor/moment-with-locales.min.js"></script>
+<script src="/admin_assets/vendor/summernote/summernote-bs4.min.js"></script>
+<script src="/admin_assets/vendor/datetime/js/bootstrap-datetimepicker.min.js"></script>
+
+<script src="/admin_assets/vendor//amchart/core.js"></script>
+<script src="/admin_assets/vendor//amchart/charts.js"></script>
+<script src="/admin_assets/vendor//amchart/material.js"></script>
+<script src="/admin_assets/vendor//amchart/animated.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/admin_assets/js/sb-admin-2.min.js"></script>
+
+<script type="text/javascript">
+
+    $.ajaxSetup({
+        cache: false
+    });
+
+
+    (function ($) {
+
+        $.MyPlans = function (options) {
+
+            var that = this;
+
+            var dataList = [];
+            var listDataTable;
+
+            var settings = $.extend({}, options);
+
+            var getDataList = function () {
+
+                $.get('/api/app_user_plans/get_my_plans.php', {}, function (response) {
+
+                    dataList = JSON.parse(response);
+
+                    if (dataList.length > 0) {
+                        //$("#topUserDropdown").prepend('<div class="dropdown-divider"></div>');
+                    }
+                    // for (let index = 0; index < dataList.length; index++) {
+                    //     var element = dataList[index];
+                    //     var source = document.getElementById("listItemTemplate").innerHTML;
+                    //     var template = Handlebars.compile(source);
+                    //     $("#dataList").append(template(element));
+                    // }
+
+                    // if (dataList.length <= 0) {
+                    //     var source = document.getElementById("noPlanTemplate").innerHTML;
+                    //     var template = Handlebars.compile(source);
+                    //     $("#dataList").html(template(element));
+
+
+                    // } else {
+                    //     $(".link-add-new").html('<i class="fa fas fa-plus"></i> Upgrade your subscription');
+                    // }
+
+                    // $("#dataList .accordion").eq(0).removeClass('d-none');
+                    // $(".loading").hide();
+
+                });
+
+            };
+
+            var init = function () {
+                // getDataList();
+            };
+
+            init();
+
+        };
+
+
+    }(jQuery));
+
+    $(document).ready(function () {
+
+        $("#sidebarToggle").trigger('click');
+
+        $(".link-how-work").click(function () {
+            $("#howWorkModal").modal('show')
+        });
+
+        var myPlansInstance = new $.MyPlans({});
+
+    });
+
+    function string_to_slug(str) {
+        str = str.replace(/^\s+|\s+$/g, ''); // trim
+        str = str.toLowerCase();
+
+        // remove accents, swap ñ for n, etc
+        var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+        var to = "aaaaeeeeiiiioooouuuunc------";
+
+        for (var i = 0, l = from.length; i < l; i++) {
+            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+
+        str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+            .replace(/-+/g, '-'); // collapse dashes
+
+        return str;
+    };
+
+    function getQS(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+        switch (operator) {
+            case '==':
+                return (v1 == v2) ? options.fn(this) : options.inverse(this);
+            case '===':
+                return (v1 === v2) ? options.fn(this) : options.inverse(this);
+            case '!=':
+                return (v1 != v2) ? options.fn(this) : options.inverse(this);
+            case '!==':
+                return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+            case '<':
+                return (v1 < v2) ? options.fn(this) : options.inverse(this);
+            case '<=':
+                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+            case '>':
+                return (v1 > v2) ? options.fn(this) : options.inverse(this);
+            case '>=':
+                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+            case '&&':
+                return (v1 && v2) ? options.fn(this) : options.inverse(this);
+            case '||':
+                return (v1 || v2) ? options.fn(this) : options.inverse(this);
+            default:
+                return options.inverse(this);
+        }
+    });
+</script>

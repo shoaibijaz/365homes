@@ -1,0 +1,12 @@
+Header add Access-Control-Allow-Origin "*"
+
+RewriteBase /
+RewriteEngine On
+
+
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} 365homes.net [NC]
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L]
+
+RewriteRule ^real-estate-web-pages/([A-Za-z0-9-]+)-property-([0-9]+) /property.php?id=$2 [L]
+RewriteRule ^login$ /login.php [L]

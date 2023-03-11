@@ -1,0 +1,37 @@
+.btn-pink {
+    border-color: #E91E63;
+    background-color: #E91E63;
+    color: #FFF;
+}
+
+.btn-pink:hover {
+    color: #FFF;
+}
+
+.btn-orange {
+    border-color: #ffa500;
+    background-color: #ffa500;
+    color: #FFF;
+}
+
+.btn-orange:hover {
+    color: #FFF;
+}
+
+.btn-yellow {
+    background-color: #ffd401;
+    border-color: #ffd401;
+    color: #FFF;
+}
+
+.bootbox-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.5rem 0.75rem;
+    z-index: 1;
+}
+
+.bootbox-body {
+    padding: 1.75rem;
+}
