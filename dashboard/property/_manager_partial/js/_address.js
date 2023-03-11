@@ -168,7 +168,7 @@
                 startDate: 'today',
                 type: 'website',
                 siteSearch: '1',
-                token_auth: '3836ce9fdafcf38fa9635acc974149bb'
+                token_auth: ''
             };
 
             // apiURL = 'http://localhost:9094/index.php?module=API&method=SitesManager.addSite';
@@ -180,7 +180,7 @@
             //     startDate: 'today',
             //     type: 'website',
             //     siteSearch: '1',
-            //     token_auth: '2c642b66eeff97d1b02b3c1e61ec9d5b'
+            //     token_auth: ''
             // }
             $.post(apiURL, params, function (response) {
                 var siteID = parseInt($(response).text());

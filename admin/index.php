@@ -65,7 +65,7 @@ include 'includes/header.php';
 
       var getLiveWidget = function(thisPanel, trackingId) {
 
-        var url = 'https://stats.spacezz.ca/index.php?module=API&method=Live.getCounters&idSite=' + trackingId + '&lastMinutes=30&format=JSON&token_auth=3836ce9fdafcf38fa9635acc974149bb&force_api_session=1';
+        var url = 'https://stats.spacezz.ca/index.php?module=API&method=Live.getCounters&idSite=' + trackingId + '&lastMinutes=30&format=JSON&token_auth=&force_api_session=1';
 
         $.get(url, {}, function(response) {
           var item = response[0];
@@ -80,7 +80,7 @@ include 'includes/header.php';
 
       var getTotalViewsWidget = function(thisPanel, trackingId) {
 
-        var url = 'https://stats.spacezz.ca/index.php?module=API&method=Actions.get&idSite=' + trackingId + '&period=year&date=2021&format=JSON&token_auth=3836ce9fdafcf38fa9635acc974149bb&force_api_session=1';
+        var url = 'https://stats.spacezz.ca/index.php?module=API&method=Actions.get&idSite=' + trackingId + '&period=year&date=2021&format=JSON&token_auth=&force_api_session=1';
 
         $.get(url, {}, function(response) {
           var item = response;

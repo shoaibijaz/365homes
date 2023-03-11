@@ -206,7 +206,7 @@ include '../includes/header.php';
                     'date': date1,
                     'format': 'JSON',
                     'idSite': websiteId,
-                    'token_auth': '3836ce9fdafcf38fa9635acc974149bb'
+                    'token_auth': ''
                 };
 
                 var url = 'https://stats.365homes.net/index.php?module=API&method=Actions.get';
